@@ -1,4 +1,4 @@
-# DSPy Local Optimizer
+# Akairo
 
 A lightweight framework for optimizing LLM responses using DSPy, with support for both cloud and local models.
 
