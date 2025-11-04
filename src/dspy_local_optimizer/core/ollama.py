@@ -13,14 +13,14 @@ import requests
 class OllamaLanguageModel:
     """Language model implementation for Ollama."""
 
-    def __init__(self, api_key: Optional[str] = None):
+    def __init__(self, api_key: Optional[str] = None) -> None:
         """Initialize the Ollama language model.
-        
+
         Args:
             api_key: Not used for Ollama but kept for consistency
         """
         self.base_url = "http://localhost:11434/api"
-        self._history = []
+        self._history: List[tuple] = []
 
     def __call__(self, prompt: str) -> str:
         """Generate a response for the given prompt.
