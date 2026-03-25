@@ -1,52 +1,45 @@
 # Akairo
 
-A lightweight framework for optimizing LLM responses using DSPy, with support for both cloud and local models.
+DSPy-based optimizer for LLM responses. Supports local models via Ollama and cloud models via OpenAI.
 
-## Features
+## Architecture
 
-- DSPy-based optimization pipeline
-- Support for local models (Llama2) via Ollama
-- Cloud model support (OpenAI)
-- Quality metrics tracking
-- Batch processing capabilities
-- Response quality scoring
+| Path | Purpose |
+|---|---|
+| `src/dspy_local_optimizer/core/models.py` | Data models |
+| `src/dspy_local_optimizer/core/metrics.py` | Quality scoring |
+| `src/dspy_local_optimizer/core/ollama.py` | Ollama client |
+| `src/dspy_local_optimizer/core/openai.py` | OpenAI client |
+| `src/dspy_local_optimizer/optimizers/guideline_optimizer.py` | Guideline optimization logic |
+| `scripts/run_optimization.py` | CLI entry point |
+| `tests/test_copro_optimizer.py` | 1 test file |
 
-## Installation
+## Requirements
 
-1. Install Poetry (package manager):
+- Python 3.10+ with Poetry
+- Ollama (for local models) or an OpenAI API key
+
+## Setup
+
 ```bash
-curl -sSL https://install.python-poetry.org | python3 -
-```
-
-2. Install dependencies:
-```bash
+git clone https://github.com/jmanhype/Akairo.git
+cd Akairo
 poetry install
-```
 
-3. Install Ollama for local model support:
-```bash
-curl -fsSL https://ollama.com/install.sh | sh
-```
-
-4. Pull the Llama2 model:
-```bash
+# For local models:
 ollama pull llama2
 ```
 
 ## Usage
 
-Basic usage example:
-
 ```python
 from dspy_local_optimizer import BatchOptimizedGuidelineManager
 
-# Initialize optimizer
 optimizer = BatchOptimizedGuidelineManager(
     model_name="ollama/llama2",  # or "openai/gpt-3.5-turbo"
     use_optimizer=True
 )
 
-# Run optimization
 optimized = optimizer.optimize_guidelines(
     guidelines=your_guidelines,
     examples=training_data,
@@ -54,20 +47,24 @@ optimized = optimizer.optimize_guidelines(
 )
 ```
 
-For more examples, see the `scripts` directory.
+Or via the script:
 
-## Development
+```bash
+poetry run python scripts/run_optimization.py
+```
 
-1. Run tests:
+## Tests
+
 ```bash
 poetry run pytest
 ```
 
-2. Run quality checks:
-```bash
-poetry run ruff check .
-```
+1 test file.
+
+## Status
+
+Small utility project. The optimization loop runs but there are no published benchmarks showing improvement over baseline. The codebase is ~6 source files.
 
 ## License
 
-MIT License
+MIT
