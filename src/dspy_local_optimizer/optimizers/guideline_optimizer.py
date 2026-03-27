@@ -7,11 +7,9 @@ import time
 from datetime import datetime
 
 import dspy
-from dspy import Example, ChainOfThought, LM, Module, Signature, TypedPredictor
+from dspy import Example, LM
 from dspy.teleprompt import COPRO
 
-from dspy_local_optimizer.core.ollama import OllamaLanguageModel
-from dspy_local_optimizer.core.openai import OpenAILanguageModel
 from dspy_local_optimizer.core.models import Guideline, GuidelineContent
 from dspy_local_optimizer.core.metrics import ModelMetrics
 from dspy_local_optimizer.core.ollama import initialize_ollama_model
@@ -200,17 +198,25 @@ class GuidelineProgram(dspy.Module):
         
         condition -> response"""
         
-    def __getstate__(self):
-        """Get state for pickling."""
+    def __getstate__(self) -> Dict[str, Any]:
+        """Get state for pickling.
+
+        Returns:
+            Dictionary of object state without unpicklable attributes
+        """
         state = self.__dict__.copy()
         # Remove unpicklable attributes
         state.pop('lm', None)
         state.pop('optimizer', None)
         state.pop('predictor', None)
         return state
-        
-    def __setstate__(self, state):
-        """Set state during unpickling."""
+
+    def __setstate__(self, state: Dict[str, Any]) -> None:
+        """Set state during unpickling.
+
+        Args:
+            state: Dictionary of object state to restore
+        """
         self.__dict__.update(state)
         # Restore state using stored init params
         if '_init_params' in state:
@@ -451,27 +457,3 @@ class BatchOptimizedGuidelineManager:
         
         self.metrics.total_time = time.time() - start_time
         return optimized_guidelines
-
-@dataclass
-class GuidelineContent:
-    """Content of a guideline.
-    
-    Attributes:
-        condition: The customer's inquiry or situation
-        response: The response to provide for this condition
-    """
-    condition: str
-    response: str  
-
-@dataclass
-class Guideline:
-    """A guideline for customer service responses.
-    
-    Attributes:
-        id: Unique identifier for the guideline
-        creation_utc: When the guideline was created
-        content: The guideline's content (condition and response)
-    """
-    id: str
-    creation_utc: datetime
-    content: GuidelineContent
